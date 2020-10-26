@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pandamy.scantopdf">
-
-<!--   Permission -->
-<!--    Internet for sharing file -->
-<!--    Camera for taking pictures of the files to convert in PDF -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- Permission -->
+    <!-- Internet for sharing file -->
+    <!-- Camera for taking pictures of the files to convert in PDF -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.ChoiceTypeScanActivity"></activity>
+        <activity android:name=".ui.ShareActivity" />
+        <activity android:name=".ui.ScanActivity" />
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
