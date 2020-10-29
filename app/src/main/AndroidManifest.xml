@@ -5,6 +5,7 @@
     <!-- Internet for sharing file -->
     <!-- Camera for taking pictures of the files to convert in PDF -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera.any" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
