@@ -69,13 +69,13 @@ class ScanActivity : AppCompatActivity() {
         Log.d(TAG, "takePhoto:")
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
-
+        Log.d(TAG, "takePhoto: imageCapture $imageCapture")
         // Create time-stamped output file to hold the image
         val photoFile = File(
             outputDirectory,
             SimpleDateFormat(FILENAME_FORMAT, Locale.FRENCH
             ).format(System.currentTimeMillis()) + ".jpg")
-
+        Log.d(TAG, "takePhoto: photoFile $photoFile")
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
@@ -110,6 +110,9 @@ class ScanActivity : AppCompatActivity() {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
 
+            imageCapture = ImageCapture.Builder()
+                .build()
+
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
@@ -119,7 +122,7 @@ class ScanActivity : AppCompatActivity() {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview)
+                    this, cameraSelector, preview,imageCapture)
 
             } catch(exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
