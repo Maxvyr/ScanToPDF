@@ -7,25 +7,27 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.util.concurrent.Executors
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
-import kotlinx.android.synthetic.main.activity_main.*
+import com.pandamy.scantopdf.utils.*
 import kotlinx.android.synthetic.main.activity_scan.*
 import java.io.File
-import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 typealias LumaListener = (luma: Double) -> Unit
 
-class ScanActivity : AppCompatActivity() {
+class ScanActivity : AppCompatActivity() , View.OnClickListener {
 
     //variable
     private var imageCapture : ImageCapture? = null
+    private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+    private var numberClick = 0
 
     //lateInitVar
     private lateinit var outputDirectory : File
@@ -43,11 +45,39 @@ class ScanActivity : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
         // Set up the listener for take photo button
-        camera_capture_button.setOnClickListener { takePhoto() }
+        camera_capture_button.setOnClickListener {takePhoto()}
+        // Set up the listener on the view for changing the camera use
+        viewFinder.setOnClickListener(this)
 
         outputDirectory = getOutputDirectory()
 
         cameraExecutor = Executors.newSingleThreadExecutor()
+    }
+
+    override fun onClick(p0: View?) {
+        Log.d(TAG, "onClick:")
+        changeScreen()
+    }
+
+    private fun changeScreen() {
+        numberClick++
+        Log.d(TAG, "changeScreen: nbrClick $numberClick")
+        if (numberClick >= 2) {
+            when(cameraSelector) {
+                CameraSelector.DEFAULT_BACK_CAMERA -> {
+                    cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+                    Log.i(TAG, "changeScreen: Camera Front")
+                    Toast.makeText(this,"Camera Front",Toast.LENGTH_SHORT).show()
+                    numberClick = 0
+                }
+                CameraSelector.DEFAULT_FRONT_CAMERA -> {
+                    cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                    Log.i(TAG, "changeScreen: Camera Back")
+                    Toast.makeText(this,"Camera Back",Toast.LENGTH_SHORT).show()
+                    numberClick = 0
+                }
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -58,7 +88,7 @@ class ScanActivity : AppCompatActivity() {
                 startCamera()
             } else {
                 Toast.makeText(this,
-                    "Permissions not granted by the user.",
+                    permissionNoteAllowed,
                     Toast.LENGTH_SHORT).show()
                 finish()
             }
@@ -69,13 +99,14 @@ class ScanActivity : AppCompatActivity() {
         Log.d(TAG, "takePhoto:")
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
-        Log.d(TAG, "takePhoto: imageCapture $imageCapture")
+
         // Create time-stamped output file to hold the image
         val photoFile = File(
             outputDirectory,
             SimpleDateFormat(FILENAME_FORMAT, Locale.FRENCH
             ).format(System.currentTimeMillis()) + ".jpg")
         Log.d(TAG, "takePhoto: photoFile $photoFile")
+
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
@@ -84,12 +115,12 @@ class ScanActivity : AppCompatActivity() {
         imageCapture.takePicture(
             outputOptions, ContextCompat.getMainExecutor(this), object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                    Log.e(TAG, "$failedTakingPhoto : ${exc.message}", exc)
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo takes : $savedUri"
+                    val msg = "$photoOK  : $savedUri"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
                 }
@@ -112,9 +143,6 @@ class ScanActivity : AppCompatActivity() {
 
             imageCapture = ImageCapture.Builder()
                 .build()
-
-            // Select back camera as a default
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
                 // Unbind use cases before rebinding
