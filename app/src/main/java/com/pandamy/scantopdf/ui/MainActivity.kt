@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS_CAMERA ) {
                 if (allPermissionsGranted()) {
-                    //TODO
+                    Log.i(TAG, "onRequestPermissionsResult: Permission Granted")
                 } else {
                     Toast.makeText(this,
                         noCameraPermission,
