@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ScanToPDF</string>
     <string name="add_new_scan">add new scan</string>
+    <string name="photo_take">photo take</string>
 </resources>
