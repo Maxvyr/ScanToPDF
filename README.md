@@ -1,11 +1,10 @@
-# Scan To PDF
+# Gallery Image
 
-**Goal**: Application to scan file with smartphone camera
+**Goal**: Make a Gallery app with ROOM
 
 ## features to develop
-1. Convert them to PDF or other format
-2. Save them on the smartphone
-3. Sharing them on the network
+1. Take pictures
+2. Save them in gallery app and in ROOM
 
 ## ScreenShot
 * COMING SOON
@@ -15,7 +14,7 @@
 * Android Studio
 
 ## Setup the project in Android studio
-1. Download the project code, preferably using `git clone https://github.com/Maxvyr/ScanToPDF.git`.
+1. Download the project code, preferably using `git clone https://github.com/Maxvyr/GalleryImage.git`.
 2. In Android Studio, select *File* | *Open...*
 3. Select the project
         
