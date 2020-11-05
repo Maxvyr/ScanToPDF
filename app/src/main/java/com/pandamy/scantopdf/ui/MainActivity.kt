@@ -1,28 +1,28 @@
 package com.pandamy.scantopdf.ui
 
 import android.Manifest
-import android.content.AbstractThreadedSyncAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.icu.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.GridLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.pandamy.scantopdf.R
+import com.pandamy.scantopdf.models.PhotoForScanning
 import com.pandamy.scantopdf.rv.BitmapAdapter
 import com.pandamy.scantopdf.utils.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    lateinit var pictures : MutableList<Bitmap>
+    lateinit var pictures : MutableList<PhotoForScanning>
     lateinit var adapter : BitmapAdapter
 
 
@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_main)
 
         //init var
-        pictures = mutableListOf<Bitmap>()
+        pictures = mutableListOf()
 
         //init rv
         adapter = BitmapAdapter(pictures, this)
@@ -78,9 +78,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if (requestCode == CAMERA_REQUEST) {
             //recover the data and past them in the Bitmap
             Log.d(TAG, "onActivityResult: $data and convert them to bitmap")
+            //image to bitmap
             val bitmap : Bitmap = data?.extras?.get("data") as Bitmap
+            //id dataclass
+            val id = Calendar.getInstance().timeInMillis
+            //var data class
+            val pictureTaking : PhotoForScanning = PhotoForScanning(id, bitmap)
             // add pictures to position 0 in the list
-            pictures.add(0,bitmap)
+            pictures.add(0,pictureTaking)
             adapter.notifyDataSetChanged()
         }
     }
