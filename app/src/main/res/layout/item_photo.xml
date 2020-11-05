@@ -22,7 +22,7 @@
             android:padding="@dimen/dp10">
 
             <ImageView
-                android:id="@+id/imageViewTest"
+                android:id="@+id/imageView"
                 android:layout_width="@dimen/dp150"
                 android:layout_height="@dimen/dp150"
                 android:src="@mipmap/ic_launcher"
